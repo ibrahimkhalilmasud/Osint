@@ -36,18 +36,18 @@ jobs:
         run: |
           if [ -f "${{ github.workspace }}/frontend/yarn.lock" ]; then
             echo "manager=yarn" >> $GITHUB_OUTPUT
-            echo "command=install" >> $GITHUB_OUTPUT
-            echo "runner=yarn" >> $GITHUB_OUTPUT
+            echo "install-command=install" >> $GITHUB_OUTPUT
+            echo "build-command=build" >> $GITHUB_OUTPUT
             exit 0
           elif [ -f "${{ github.workspace }}/frontend/package-lock.json" ]; then
             echo "manager=npm" >> $GITHUB_OUTPUT
-            echo "command=ci" >> $GITHUB_OUTPUT
-            echo "runner=npx --no-install" >> $GITHUB_OUTPUT
+            echo "install-command=ci" >> $GITHUB_OUTPUT
+            echo "build-command=run build" >> $GITHUB_OUTPUT
             exit 0
           elif [ -f "${{ github.workspace }}/frontend/package.json" ]; then
             echo "manager=npm" >> $GITHUB_OUTPUT
-            echo "command=install" >> $GITHUB_OUTPUT
-            echo "runner=npx --no-install" >> $GITHUB_OUTPUT
+            echo "install-command=install" >> $GITHUB_OUTPUT
+            echo "build-command=run build" >> $GITHUB_OUTPUT
             exit 0
           else
             echo "Unable to determine package manager"
@@ -71,16 +71,16 @@ jobs:
           path: |
             frontend/.next/cache
           # Generate a new cache whenever packages or source files change.
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('frontend/**/package-lock.json', 'frontend/**/yarn.lock') }}-${{ hashFiles('frontend/app/**/*.{js,jsx,ts,tsx}', 'frontend/components/**/*.{js,jsx,ts,tsx}', 'frontend/public/**', 'frontend/*.{config.js,config.ts}', 'frontend/next.config.js', 'frontend/tsconfig.json') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('frontend/**/package-lock.json', 'frontend/**/yarn.lock') }}-${{ hashFiles('frontend/**/*.{js,jsx,ts,tsx}') }}
           # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('frontend/**/package-lock.json', 'frontend/**/yarn.lock') }}-
       - name: Install dependencies
         working-directory: frontend
-        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.install-command }}
       - name: Build with Next.js
         working-directory: frontend
-        run: ${{ steps.detect-package-manager.outputs.runner }} next build
+        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.build-command }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
