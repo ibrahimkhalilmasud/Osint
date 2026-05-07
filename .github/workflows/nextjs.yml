@@ -39,6 +39,11 @@ jobs:
             echo "command=install" >> $GITHUB_OUTPUT
             echo "runner=yarn" >> $GITHUB_OUTPUT
             exit 0
+          elif [ -f "${{ github.workspace }}/frontend/package-lock.json" ]; then
+            echo "manager=npm" >> $GITHUB_OUTPUT
+            echo "command=ci" >> $GITHUB_OUTPUT
+            echo "runner=npx --no-install" >> $GITHUB_OUTPUT
+            exit 0
           elif [ -f "${{ github.workspace }}/frontend/package.json" ]; then
             echo "manager=npm" >> $GITHUB_OUTPUT
             echo "command=install" >> $GITHUB_OUTPUT
@@ -66,7 +71,7 @@ jobs:
           path: |
             frontend/.next/cache
           # Generate a new cache whenever packages or source files change.
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('frontend/**/package-lock.json', 'frontend/**/yarn.lock') }}-${{ hashFiles('frontend/**/*.js', 'frontend/**/*.jsx', 'frontend/**/*.ts', 'frontend/**/*.tsx') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('frontend/**/package-lock.json', 'frontend/**/yarn.lock') }}-${{ hashFiles('frontend/app/**/*.js', 'frontend/app/**/*.jsx', 'frontend/app/**/*.ts', 'frontend/app/**/*.tsx', 'frontend/components/**/*.js', 'frontend/components/**/*.jsx', 'frontend/components/**/*.ts', 'frontend/components/**/*.tsx', 'frontend/public/**', 'frontend/next.config.js', 'frontend/tsconfig.json', 'frontend/postcss.config.js', 'frontend/tailwind.config.ts') }}
           # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('frontend/**/package-lock.json', 'frontend/**/yarn.lock') }}-
