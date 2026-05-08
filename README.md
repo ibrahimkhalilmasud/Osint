@@ -31,10 +31,10 @@ If you are new, use **Docker Compose**. It starts everything for you.
 - [Git](https://git-scm.com/downloads)
 
 ### Step 2: Open a terminal in the project folder
-If you already cloned the repo, go into it:
+If you already cloned the repo, go into your cloned folder:
 
 ```bash
-cd Osint
+cd <your-cloned-folder-name>
 ```
 
 ### Step 3: Create your `.env` file
