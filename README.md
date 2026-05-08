@@ -180,5 +180,3 @@ docker compose up --build
 - `/scripts` → helper scripts
 
 ---
-
-If you want, I can also create a **very short 5-minute quickstart version** for absolute beginners.
